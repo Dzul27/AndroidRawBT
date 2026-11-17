@@ -6,7 +6,7 @@
 
 It is the Android companion of [WinRawBT](https://github.com/Dzul27/WinRawBT) and exposes the **same local print API**, so one POS script works on both platforms. Not affiliated with or endorsed by the RawBT project.
 
-> **Status: beta (v0.1.0-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
+> **Status: beta (v0.1.1-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
 
 ## Features
 
@@ -14,7 +14,7 @@ It is the Android companion of [WinRawBT](https://github.com/Dzul27/WinRawBT) an
 - Test Connection prints a diagnostic receipt.
 - Local HTTP `POST`, WebSocket and `rawbt:` deep link, all through one serialized FIFO queue.
 - Accepts raw bytes, Base64, `rawbt:base64,...` / `intent:base64,...` bodies, `data:` URIs, JSON wrappers, URL-encoded/multipart forms, hex text.
-- Connect-on-demand RFCOMM: socket opened per job, one retry, ~250 ms drain, then closed.
+- Connect-on-demand RFCOMM: socket opened per job, one retry, chunked writes (128 bytes, 15 ms pause), size-scaled drain (3.8-10 s), then closed.
 - Origin control (`AllowAnyOrigin`, `AllowedOrigins`), Chrome Local Network Access preflight headers.
 - Activity log (memory only), service health indicator, optional auto-start, English and Indonesian UI.
 
@@ -125,7 +125,7 @@ See [docs/BUILD.md](docs/BUILD.md).
 | --- | --- | --- |
 | Endpoints | `http://localhost:8080/`, `ws://localhost:8080/` | same (loopback `127.0.0.1`) |
 | Payload decoder, CORS/origin rules, queue | yes | same semantics |
-| Connect-on-demand RFCOMM | yes | yes (+ one retry, ~250 ms drain) |
+| Connect-on-demand RFCOMM | yes | yes (+ one retry, chunked writes, size-scaled drain) |
 | `rawbt:` links | URL payloads accepted | deep-link `intent-filter` for `rawbt:` |
 | Paper width | 58 / 80 mm test receipt | 58 / 80 mm test receipt |
 | Auto-start | with Windows | on boot / on app open |

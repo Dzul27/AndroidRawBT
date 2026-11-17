@@ -4,6 +4,15 @@ All notable changes to AndroidRawBT. Format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+## [0.1.1-beta]
+
+### Fixed
+- Garbled/junk output on Bluetooth thermal printers for web-originated receipts (~1 KB+): payload is now written in 128-byte chunks with a 15 ms pause and flushed per chunk, and the socket is kept open for a size-scaled drain (min 3.8 s, max 10 s) before closing, instead of one write plus a 250 ms drain.
+- Payload decoder no longer trims ESC/POS command bytes FS/GS/RS/US (U+001C-U+001F) as whitespace; JSON `\u` escapes now require exactly four hex digits (parity with WinRawBT).
+
+### Added
+- Activity log shows the received body head, an ESC/POS summary (code page, raster/QR/cut counts, bytes >= 0x80 outside images) and a 48-byte hex+ASCII preview.
+
 ## [0.1.0-beta]
 
 First public beta (Phase 1 + Phase 2 of the PRD). On-device verification on real printers and Chrome for Android is still pending.

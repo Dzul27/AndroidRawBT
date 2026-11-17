@@ -51,8 +51,10 @@ class DeepLinkActivity : Activity() {
 
     /** Returns the printer bytes, or null (after logging + toast) when the link is invalid. */
     private fun decode(context: Context, link: String): ByteArray? {
+        val raw = link.toByteArray(Charsets.UTF_8)
+        ActivityLog.info("Deep link as received: ${PayloadDecoder.formatBodyHead(raw)}")
         val decoded = try {
-            PayloadDecoder.decode(link.toByteArray(Charsets.UTF_8), "text/plain")
+            PayloadDecoder.decode(raw, "text/plain")
         } catch (e: PayloadDecodeException) {
             ActivityLog.warn("Deep link rejected: ${e.message ?: "invalid payload"}")
             null
@@ -66,8 +68,9 @@ class DeepLinkActivity : Activity() {
             return null
         }
         ActivityLog.info(
-            "Deep link: ${decoded.bytes.size} B | decode: ${decoded.path} | " + hexAsciiPreview(decoded.bytes, 32),
+            "Deep link: ${decoded.bytes.size} B | decode: ${decoded.path} | " + hexAsciiPreview(decoded.bytes, 48),
         )
+        ActivityLog.info("Deep link: ${PayloadDecoder.summarizeEscPos(decoded.bytes)}")
         return decoded.bytes
     }
 

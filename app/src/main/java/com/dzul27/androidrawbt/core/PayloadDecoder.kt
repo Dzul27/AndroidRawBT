@@ -97,6 +97,65 @@ object PayloadDecoder {
         return DecodeResult(r.bytes, r.path)
     }
 
+    /** Quoted ASCII head of the request body as received (non-printables shown as '.'). */
+    fun formatBodyHead(body: ByteArray, maxChars: Int = 64): String {
+        val n = minOf(body.size, maxChars)
+        val sb = StringBuilder(n + 8)
+        sb.append('"')
+        for (i in 0 until n) sb.append(printable(body[i]))
+        sb.append('"')
+        if (body.size > n) sb.append("...")
+        return sb.toString()
+    }
+
+    /**
+     * One-line ESC/POS feature scan (code page, raster images, QR, cut...) of the decoded printer bytes, to help
+     * diagnose garbled output: bytes >= 0x80 outside raster images are text whose look depends on the printer's
+     * code page, so a payload that never selects one (ESC t n) prints them in whatever the printer defaults to.
+     */
+    fun summarizeEscPos(d: ByteArray): String {
+        val codePages = ArrayList<Int>()
+        var raster = 0
+        var twoD = 0
+        var cut = 0
+        var drawer = 0
+        var high = 0
+        var lineFeeds = 0
+        var i = 0
+        while (i < d.size) {
+            val b = d[i].toInt() and 0xFF
+            val next = if (i + 1 < d.size) d[i + 1].toInt() and 0xFF else -1
+            if (b == GS && i + 7 < d.size && next == 'v'.code && (d[i + 2].toInt() and 0xFF) == '0'.code) {
+                // GS v 0 m xL xH yL yH d1..dk: skip the k = (xL + xH*256) * (yL + yH*256) image bytes.
+                val w = (d[i + 4].toInt() and 0xFF) or ((d[i + 5].toInt() and 0xFF) shl 8)
+                val h = (d[i + 6].toInt() and 0xFF) or ((d[i + 7].toInt() and 0xFF) shl 8)
+                raster++
+                i = minOf(d.size - 1L, i + 7L + w.toLong() * h).toInt() + 1
+                continue
+            }
+            if (b >= 0x80) {
+                high++
+            } else if (b == 0x0A) {
+                lineFeeds++
+            } else if (b == ESC && i + 2 < d.size && next == 't'.code) {
+                val page = d[i + 2].toInt() and 0xFF
+                if (page !in codePages && codePages.size < 6) codePages.add(page)
+            } else if (b == ESC && next == 'p'.code) {
+                drawer++
+            } else if (b == GS && i + 2 < d.size && next == '('.code && (d[i + 2].toInt() and 0xFF) == 'k'.code) {
+                twoD++
+            } else if (b == GS && next == 'V'.code) {
+                cut++
+            }
+            i++
+        }
+        val init = d.size >= 2 && (d[0].toInt() and 0xFF) == ESC && d[1] == '@'.code.toByte()
+        return "ESC/POS scan: starts with ESC @=${if (init) "yes" else "NO"}, " +
+            "code page (ESC t n)=${if (codePages.isEmpty()) "none set" else codePages.joinToString("/")}, " +
+            "raster images (GS v 0)=$raster, QR/2D (GS ( k)=$twoD, cut (GS V)=$cut, drawer (ESC p)=$drawer, " +
+            "line feeds=$lineFeeds, bytes>=0x80 outside images=$high"
+    }
+
     // ---------------------------------------------------------------------
     // Body level
     // ---------------------------------------------------------------------
@@ -176,8 +235,31 @@ object PayloadDecoder {
             m == "application/x-escpos" || m == "application/escpos" || m == "application/vnd.escpos"
 
     private fun looksLikeEnvelope(body: ByteArray): Boolean {
-        val head = String(body, 0, minOf(body.size, 256), LATIN1).trimStart()
+        val head = String(body, 0, minOf(body.size, 256), LATIN1).trimStartNet()
         return ENVELOPE_RX.containsMatchIn(head) || DATA_URI_RX.containsMatchIn(head)
+    }
+
+    /**
+     * .NET `char.IsWhiteSpace`, i.e. what WinRawBT's `Trim()` strips. Kotlin's `isWhitespace()` additionally counts
+     * U+001C..U+001F (FS/GS/RS/US), which here are ESC/POS command bytes, not padding.
+     */
+    private fun isNetWhitespace(c: Char): Boolean = when (c.code) {
+        in 0x09..0x0D, 0x20, 0x85, 0xA0, 0x1680, in 0x2000..0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000 -> true
+        else -> false
+    }
+
+    private fun String.trimNet(): String {
+        var start = 0
+        var end = length
+        while (start < end && isNetWhitespace(this[start])) start++
+        while (end > start && isNetWhitespace(this[end - 1])) end--
+        return substring(start, end)
+    }
+
+    private fun String.trimStartNet(): String {
+        var start = 0
+        while (start < length && isNetWhitespace(this[start])) start++
+        return substring(start)
     }
 
     /** True when the text holds control characters other than TAB/CR/LF (i.e. ESC/POS binary, not text). */
@@ -219,7 +301,7 @@ object PayloadDecoder {
         explicitBase64: Boolean,
         strict: Boolean,
     ): Res {
-        val t = text.trim()
+        val t = text.trimNet()
         if (t.isEmpty()) return Res(ByteArray(0), "empty (whitespace only)", false)
         if (depth > MAX_DEPTH) return plain(text, fallback, null)
 
@@ -472,7 +554,7 @@ object PayloadDecoder {
      * or ASCII text (or the string is long and clean). Returns decoded bytes and a variant description.
      */
     private fun tryBase64(text: String, explicitBase64: Boolean, strict: Boolean): Pair<ByteArray, String>? {
-        var s = text.trim()
+        var s = text.trimNet()
         if (s.length < (if (explicitBase64) 2 else 4)) return null
 
         var percent = false
@@ -773,7 +855,10 @@ private object MiniJson {
                             't' -> sb.append('\t')
                             'u' -> {
                                 if (pos + 4 > s.length) throw Failure()
-                                sb.append(s.substring(pos, pos + 4).toIntOrNull(16)?.toChar() ?: throw Failure())
+                                val hex = s.substring(pos, pos + 4)
+                                // Exactly 4 hex digits: toIntOrNull(16) would also take "+123" / "-123", which is not JSON.
+                                if (!hex.all { (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F') }) throw Failure()
+                                sb.append(hex.toInt(16).toChar())
                                 pos += 4
                             }
                             else -> throw Failure()

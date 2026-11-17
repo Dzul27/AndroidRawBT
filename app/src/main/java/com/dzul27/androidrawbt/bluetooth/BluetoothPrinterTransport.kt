@@ -9,6 +9,7 @@ import com.dzul27.androidrawbt.R
 import com.dzul27.androidrawbt.core.ActivityLog
 import com.dzul27.androidrawbt.printing.PrinterTransport
 import java.io.IOException
+import java.io.OutputStream
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,15 +32,13 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
                 val socket = connectWithRetry(device)
                 try {
                     try {
-                        socket.outputStream.apply {
-                            write(bytes)
-                            flush()
-                        }
+                        writePaced(socket.outputStream, bytes)
                     } catch (e: IOException) {
                         throw IOException(context.getString(R.string.bt_err_write, e.message ?: "IO"), e)
                     }
-                    // Let the printer's hardware buffer drain before the link is torn down.
-                    delay(DRAIN_MS)
+                    // Let the printer's hardware buffer drain before the link is torn down;
+                    // closing early drops queued bytes and leaves the printer mid-sequence.
+                    delay(drainMillis(bytes.size))
                 } finally {
                     closeQuietly(socket)
                 }
@@ -107,6 +106,36 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
         val SPP_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         const val MAX_ATTEMPTS = 2
         const val RETRY_DELAY_MS = 1_000L
-        const val DRAIN_MS = 250L
     }
 }
+
+internal const val WRITE_CHUNK_BYTES = 128
+internal const val WRITE_PAUSE_MS = 15L
+internal const val DRAIN_MIN_MS = 3_800L
+internal const val DRAIN_MAX_MS = 10_000L
+private const val DRAIN_BASE_MS = 1_500L
+private const val DRAIN_MS_PER_20_BYTES = 90L
+
+/**
+ * Writes [bytes] unmodified and in order in [WRITE_CHUNK_BYTES] pieces, flushing and pausing
+ * [WRITE_PAUSE_MS] between pieces. Cheap SPP printers have a small receive buffer and often do
+ * not honour RFCOMM flow control, so one large write overruns it and prints as garbage.
+ */
+internal suspend fun writePaced(out: OutputStream, bytes: ByteArray) {
+    var offset = 0
+    while (offset < bytes.size) {
+        val len = minOf(WRITE_CHUNK_BYTES, bytes.size - offset)
+        out.write(bytes, offset, len)
+        out.flush()
+        offset += len
+        if (offset < bytes.size) delay(WRITE_PAUSE_MS)
+    }
+}
+
+/**
+ * Time to wait after the last write before closing the socket. Closing before the printer has
+ * finished burning paper drops its buffer and leaves it mid-sequence, so the wait follows the
+ * mechanical print time (~90 ms per 20 bytes of text on a 58 mm printer), bounded to 3.8-10 s.
+ */
+internal fun drainMillis(size: Int): Long =
+    (size / 20L * DRAIN_MS_PER_20_BYTES + DRAIN_BASE_MS).coerceIn(DRAIN_MIN_MS, DRAIN_MAX_MS)

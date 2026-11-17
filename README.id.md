@@ -6,7 +6,7 @@
 
 Ini pendamping Android dari [WinRawBT](https://github.com/Dzul27/WinRawBT) dengan **API lokal yang sama**, sehingga satu skrip POS berjalan di kedua platform. Tidak berafiliasi dengan proyek RawBT.
 
-> **Status: beta (v0.1.0-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
+> **Status: beta (v0.1.1-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
 
 ## Fitur
 
@@ -14,7 +14,7 @@ Ini pendamping Android dari [WinRawBT](https://github.com/Dzul27/WinRawBT) denga
 - Tombol Test Connection mencetak struk diagnostik.
 - HTTP `POST`, WebSocket, dan deep link `rawbt:` lokal, semuanya lewat satu antrean FIFO berurutan.
 - Menerima byte mentah, Base64, `rawbt:base64,...` / `intent:base64,...`, `data:` URI, pembungkus JSON, form URL-encoded/multipart, teks hex.
-- RFCOMM connect-on-demand: socket dibuka per job, satu kali coba ulang, jeda ~250 ms, lalu ditutup.
+- RFCOMM connect-on-demand: socket dibuka per job, satu kali coba ulang, tulis per chunk (128 byte, jeda 15 ms), jeda drain sesuai ukuran (3,8-10 dtk), lalu ditutup.
 - Kontrol origin (`AllowAnyOrigin`, `AllowedOrigins`), header preflight Chrome Local Network Access.
 - Log aktivitas (hanya di memori), indikator kesehatan service, auto-start opsional, UI Inggris dan Indonesia.
 
@@ -121,7 +121,7 @@ Lihat [docs/BUILD.md](docs/BUILD.md).
 | --- | --- | --- |
 | Endpoint | `http://localhost:8080/`, `ws://localhost:8080/` | sama (loopback `127.0.0.1`) |
 | Decoder payload, aturan CORS/origin, antrean | ya | semantik sama |
-| RFCOMM connect-on-demand | ya | ya (+ satu coba ulang, jeda ~250 ms) |
+| RFCOMM connect-on-demand | ya | ya (+ satu coba ulang, tulis per chunk, jeda drain sesuai ukuran) |
 | Tautan `rawbt:` | payload URL diterima | `intent-filter` deep link `rawbt:` |
 | Lebar kertas | struk uji 58 / 80 mm | struk uji 58 / 80 mm |
 | Auto-start | bersama Windows | saat boot / saat aplikasi dibuka |

@@ -389,4 +389,45 @@ class PayloadDecoderTest {
         assertTrue(p.endsWith("tail: 20 21 22 23 24 25 26 27"))
         assertEquals(" | ", hexAsciiPreview(ByteArray(0)))
     }
+
+    @Test
+    fun fsAndGsInsideWrappersAreCommandBytesNotWhitespace() {
+        // Kotlin's trim() strips U+001C..U+001F; WinRawBT's (.NET) Trim() does not, so a lone FS/GS must survive.
+        assertArrayEquals(byteArrayOf(0x1D), decode("{\"data\":\"\\u001d\"}", "application/json").bytes)
+        assertArrayEquals(byteArrayOf(0x1C), decode("payload=%1C", "application/x-www-form-urlencoded").bytes)
+    }
+
+    @Test
+    fun jsonUnicodeEscapeNeedsFourHexDigits() {
+        val body = "{\"data\":\"\\u+01dA\"}"
+        val r = decode(body, "application/json")
+        assertArrayEquals(body.toByteArray(), r.bytes)
+        assertTrue(r.path.contains("not valid JSON"))
+    }
+
+    @Test
+    fun escPosSummaryReportsCodePageHighBytesCutAndImages() {
+        val text = byteArrayOf(0x1B, 0x40, 0x1B, 0x74, 0x13, 0x43, 0x61, 0x66, 0x82.toByte(), 0x0A, 0x1D, 0x56, 0x42, 0x00)
+        assertEquals(
+            "ESC/POS scan: starts with ESC @=yes, code page (ESC t n)=19, raster images (GS v 0)=0, " +
+                "QR/2D (GS ( k)=0, cut (GS V)=1, drawer (ESC p)=0, line feeds=1, bytes>=0x80 outside images=1",
+            PayloadDecoder.summarizeEscPos(text),
+        )
+        // GS v 0 m xL xH yL yH + 2*2 image bytes: the 0xFF image data must not count as text bytes.
+        val raster = byteArrayOf(0x1B, 0x40, 0x1D, 0x76, 0x30, 0x00, 0x02, 0x00, 0x02, 0x00) +
+            ByteArray(4) { 0xFF.toByte() } + byteArrayOf(0x0A)
+        assertEquals(
+            "ESC/POS scan: starts with ESC @=yes, code page (ESC t n)=none set, raster images (GS v 0)=1, " +
+                "QR/2D (GS ( k)=0, cut (GS V)=0, drawer (ESC p)=0, line feeds=1, bytes>=0x80 outside images=0",
+            PayloadDecoder.summarizeEscPos(raster),
+        )
+        assertTrue(PayloadDecoder.summarizeEscPos(byteArrayOf(0x41, 0x0A)).startsWith("ESC/POS scan: starts with ESC @=NO"))
+    }
+
+    @Test
+    fun bodyHeadQuotesPrintableAsciiAndMarksTruncation() {
+        val head = PayloadDecoder.formatBodyHead(byteArrayOf('H'.code.toByte(), 'i'.code.toByte(), 0x0A, 0x80.toByte(), 'A'.code.toByte()))
+        assertEquals("\"Hi..A\"", head)
+        assertEquals("\"abc\"...", PayloadDecoder.formatBodyHead("abcdef".toByteArray(), 3))
+    }
 }

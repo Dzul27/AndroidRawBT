@@ -13,7 +13,7 @@ import kotlinx.coroutines.CancellationException
 internal data class JobOutcome(val status: Int, val json: String)
 
 internal const val MSG_EMPTY_OR_INVALID = "Empty payload or invalid Base64"
-private const val PREVIEW_BYTES = 32
+private const val PREVIEW_BYTES = 48
 
 internal fun okJson(bytesSent: Int) = """{"status":"OK","bytesSent":$bytesSent}"""
 
@@ -58,6 +58,7 @@ internal object PrintJobs {
                 PayloadDecoder.decode(body, decoderContentType)
             } catch (e: PayloadDecodeException) {
                 ActivityLog.info("$tag $client | Content-Type: $contentTypeLabel | body ${body.size} B")
+                ActivityLog.info("$tag body as received: ${PayloadDecoder.formatBodyHead(body)}")
                 ActivityLog.warn("$tag rejected: ${e.message ?: MSG_EMPTY_OR_INVALID}")
                 return JobOutcome(400, errorJson(MSG_EMPTY_OR_INVALID))
             }
@@ -66,6 +67,9 @@ internal object PrintJobs {
                 "$tag $client | Content-Type: $contentTypeLabel | body ${body.size} B -> ${payload.size} B | " +
                     "decode: ${decoded.path}",
             )
+            if (!payload.contentEquals(body)) {
+                ActivityLog.info("$tag body as received: ${PayloadDecoder.formatBodyHead(body)}")
+            }
             if (payload.isEmpty()) {
                 ActivityLog.warn("$tag rejected: empty payload.")
                 return JobOutcome(400, errorJson(MSG_EMPTY_OR_INVALID))
@@ -74,6 +78,7 @@ internal object PrintJobs {
                 "$tag first ${minOf(payload.size, PREVIEW_BYTES)} of ${payload.size} B (hex | ascii): " +
                     hexAsciiPreview(payload, PREVIEW_BYTES),
             )
+            ActivityLog.info("$tag ${PayloadDecoder.summarizeEscPos(payload)}")
             return when (val result = PrintQueue.submit(payload, origin)) {
                 is PrintResult.Ok -> JobOutcome(200, okJson(result.bytesSent))
                 is PrintResult.Failure ->
