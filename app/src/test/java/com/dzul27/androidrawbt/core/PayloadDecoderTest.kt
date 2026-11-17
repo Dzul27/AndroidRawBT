@@ -430,4 +430,64 @@ class PayloadDecoderTest {
         assertEquals("\"Hi..A\"", head)
         assertEquals("\"abc\"...", PayloadDecoder.formatBodyHead("abcdef".toByteArray(), 3))
     }
+
+    private val realistic = byteArrayOf(
+        0x1B, 0x40, 0x1B, 0x74, 0x00, 0x1B, 0x61, 0x00, 'H'.code.toByte(), 'i'.code.toByte(), 0x0A,
+        0xFB.toByte(), 0xFF.toByte(), 0xFE.toByte(), 0x3E, 0x3F, 0x1D, 0x56, 0x42, 0x00,
+    )
+    private val realisticB64 = Base64.getEncoder().encodeToString(realistic)
+
+    @Test
+    fun rawbtEnvelopeAroundDataUriIsDecodedAgain() {
+        assertTrue(realisticB64.contains('+') || realisticB64.contains('/'))
+        val link = "rawbt:data:application/octet-stream;base64,$realisticB64"
+        val r = decode(link)
+        assertArrayEquals(realistic, r.bytes)
+        assertTrue(r.path, r.path.contains("data-URI base64"))
+    }
+
+    @Test
+    fun rawbtEnvelopeAroundFullyPercentEncodedDataUri() {
+        // %2B / %2F / %3D must come back as + / = in the Base64, never as spaces or leftovers.
+        val inner = java.net.URLEncoder.encode("data:application/octet-stream;base64,$realisticB64", "UTF-8")
+        assertTrue(inner.contains("%2B") || inner.contains("%2F"))
+        assertArrayEquals(realistic, decode("rawbt:$inner").bytes)
+        assertArrayEquals(realistic, decode("rawbt://$inner").bytes)
+        assertArrayEquals(realistic, decode("intent:$inner#Intent;scheme=rawbt;end;").bytes)
+    }
+
+    @Test
+    fun rawbtEnvelopeWithLiteralPlusInPartlyEncodedDataUri() {
+        val link = "rawbt:data%3Aapplication%2Foctet-stream%3Bbase64%2C$realisticB64"
+        assertArrayEquals(realistic, decode(link).bytes)
+    }
+
+    @Test
+    fun rawbtEnvelopeWithPercentEncodedBase64Prefix() {
+        val link = "rawbt:base64%2C" + java.net.URLEncoder.encode(realisticB64, "UTF-8")
+        assertArrayEquals(realistic, decode(link).bytes)
+    }
+
+    @Test
+    fun rawbtBase64EnvelopeStillWorks() {
+        assertArrayEquals(realistic, decode("rawbt:base64,$realisticB64").bytes)
+    }
+
+    @Test
+    fun rawbtEnvelopeWrapsAnyDecodableText() {
+        assertArrayEquals(realistic, decode("rawbt:" + java.net.URLEncoder.encode("{\"data\":\"$realisticB64\"}", "UTF-8")).bytes)
+        assertArrayEquals(
+            realistic.copyOf(8),
+            decode("rawbt:" + java.net.URLEncoder.encode("1b 40 1b 74 00 1b 61 00", "UTF-8").replace("+", "%20")).bytes,
+        )
+        assertArrayEquals("Hello World".toByteArray(), decode("rawbt:Hello%20World").bytes)
+    }
+
+    @Test
+    fun deeplyNestedEnvelopesTerminate() {
+        var link = "rawbt:Hello%20World"
+        repeat(12) { link = "rawbt:" + java.net.URLEncoder.encode(link, "UTF-8") }
+        val r = decode(link)
+        assertTrue(r.bytes.isNotEmpty())
+    }
 }

@@ -4,6 +4,11 @@ All notable changes to AndroidRawBT. Format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+## [0.1.2-beta]
+
+### Fixed
+- Web prints sent as `rawbt:data:application/octet-stream;base64,...` (and `rawbt://`, `intent:` wrappers) were printed as the literal ASCII text of the data URI (junk on the printer); the decoded inner payload is now run through the decoder again (data URI/base64/hex/JSON, max 4 nested levels), with %2B/%2F/%3D handled correctly and a literal '+' preserved. A recognisably wrapped but invalid inner payload is now rejected instead of printed as text.
+
 ## [0.1.1-beta]
 
 ### Fixed

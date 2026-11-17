@@ -361,7 +361,7 @@ object PayloadDecoder {
                     ?: return fail("$label:base64 envelope does not contain valid Base64")
                 return finishBase64(b64.first, "$label:base64 envelope (${b64.second})", depth)
             }
-            return Res(percentDecode(rest, false), "$label: envelope with percent-encoded text", true)
+            return decodeInner(percentDecode(rest, false), "$label: envelope with percent-encoded text", depth)
         }
 
         if (DATA_URI_RX.containsMatchIn(t)) {
@@ -372,9 +372,27 @@ object PayloadDecoder {
                 val b64 = tryBase64(data, true, false) ?: return fail("data-URI does not contain valid Base64")
                 return finishBase64(b64.first, "data-URI base64 (${b64.second})", depth)
             }
-            return Res(percentDecode(data, false), "data-URI with percent-encoded text", true)
+            return decodeInner(percentDecode(data, false), "data-URI with percent-encoded text", depth)
         }
         return null
+    }
+
+    /**
+     * The percent-decoded body of an envelope / data URI may itself be a wrapper (`rawbt:data:...;base64,...`,
+     * `rawbt:base64%2C...`, `rawbt:{"data":...}`, hex ...): run it through the text pipeline again (bounded by
+     * [MAX_DEPTH]). Text that holds no wrapper stays as the percent-decoded bytes.
+     */
+    private fun decodeInner(bytes: ByteArray, label: String, depth: Int): Res {
+        if (bytes.isEmpty()) return Res(bytes, label, true)
+        val text = bytesToText(bytes)
+        val t = text.trimNet()
+        if (t.startsWith("base64,", ignoreCase = true)) {
+            val b64 = tryBase64(t.substring(7), true, false)
+                ?: return fail("$label holds base64, but not valid Base64")
+            return prefix(label, finishBase64(b64.first, "base64 (${b64.second})", depth))
+        }
+        val inner = decodeText(text, bytes, depth + 1, false, false, false)
+        return if (inner.transformed || inner.error != null) prefix(label, inner) else Res(bytes, label, true)
     }
 
     // ---------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
 Ini pendamping Android dari [WinRawBT](https://github.com/Dzul27/WinRawBT) dengan **API lokal yang sama**, sehingga satu skrip POS berjalan di kedua platform. Tidak berafiliasi dengan proyek RawBT.
 
-> **Status: beta (v0.1.1-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
+> **Status: beta (v0.1.2-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
 
 ## Fitur
 
