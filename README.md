@@ -6,7 +6,7 @@
 
 It is the Android companion of [WinRawBT](https://github.com/Dzul27/WinRawBT) and exposes the **same local print API**, so one POS script works on both platforms. Not affiliated with or endorsed by the RawBT project.
 
-> **Status: beta (v0.1.2-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
+> **Status: beta (v0.1.3-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
 
 ## Features
 

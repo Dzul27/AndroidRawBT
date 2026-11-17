@@ -2,11 +2,12 @@
 <resources>
     <style name="Theme.AndroidRawBT" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <!-- DeepLinkActivity: invisible, no window animation flash. -->
-    <style name="Theme.AndroidRawBT.Translucent" parent="android:Theme.Material.Light.NoActionBar">
+    <!-- DeepLinkActivity: never displayed (windowNoDisplay), no window animation, no dim. The activity
+         must call finish() in onCreate (it does). -->
+    <style name="Theme.AndroidRawBT.Translucent" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowNoDisplay">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>

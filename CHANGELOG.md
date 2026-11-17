@@ -4,6 +4,11 @@ All notable changes to AndroidRawBT. Format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+## [0.1.3-beta]
+
+### Fixed
+- Printing from Chrome via the `rawbt:` deep link no longer switches the screen to AndroidRawBT: `DeepLinkActivity` is now a no-display trampoline with its own empty task affinity (it previously shared the app's task and raised MainActivity). Jobs are still queued and logged; the HTTP `127.0.0.1` route with the service running remains the most robust zero-switch path.
+
 ## [0.1.2-beta]
 
 ### Fixed

@@ -19,20 +19,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Handles rawbt:base64,... links (FR-SVC-06): decode with the shared decoder, print via [PrintQueue]
- * (works with or without the service running), then finish().
+ * Handles rawbt:base64,... links (FR-SVC-06) as an invisible trampoline: decode with the shared decoder,
+ * hand the bytes to [PrintQueue] on an application-scoped coroutine (works with or without the service
+ * running), and finish() immediately. It never starts MainActivity and, with an empty taskAffinity in the
+ * manifest, never raises the app's task, so the calling browser stays in front.
  */
 class DeepLinkActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handle(intent)
         finish()
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handle(intent)
-        finish()
+        @Suppress("DEPRECATION")
+        overridePendingTransition(0, 0)
     }
 
     private fun handle(intent: Intent?) {

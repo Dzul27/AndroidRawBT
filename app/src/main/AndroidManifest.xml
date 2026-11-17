@@ -59,12 +59,16 @@
             </intent-filter>
         </activity>
 
-        <!-- rawbt:base64,... deep link (FR-SVC-06); no UI, closes itself after printing. -->
+        <!-- rawbt:base64,... deep link (FR-SVC-06): invisible trampoline. Own empty task affinity so it
+             never joins/raises the app task (which would bring MainActivity forward), no history, not in
+             recents; finishes in onCreate so the calling browser stays on screen. -->
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:launchMode="standard"
             android:theme="@style/Theme.AndroidRawBT.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
