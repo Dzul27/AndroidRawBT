@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndroidRawBT</string>
+
+    <!-- Umum -->
+    <string name="ok">OK</string>
+    <string name="cancel">Batal</string>
+    <string name="close">Tutup</string>
+    <string name="back">Kembali</string>
+    <string name="settings">Pengaturan</string>
+    <string name="unnamed">(tanpa nama)</string>
+    <string name="open_app_settings">Pengaturan aplikasi</string>
+    <string name="bluetooth_settings">Pengaturan Bluetooth</string>
+
+    <!-- Layar utama -->
+    <string name="printer">Printer</string>
+    <string name="select_printer">Pilih printer</string>
+    <string name="no_paired_devices">Tidak ada perangkat terpasang. Gunakan Pindai &amp; Pasangkan.</string>
+    <string name="printer_saved_label">%1$s (belum dipasangkan)</string>
+    <string name="printer_not_paired_warning">Printer tersimpan tidak lagi dipasangkan. Pilih printer lain atau gunakan Pindai &amp; Pasangkan.</string>
+    <string name="refresh">Segarkan</string>
+    <string name="scan_and_pair">Pindai &amp; Pasangkan</string>
+    <string name="scan_disabled_running">Pindai &amp; Pasangkan tidak tersedia saat layanan berjalan.</string>
+    <string name="port">Port</string>
+    <string name="port_hint">Hanya dapat diubah saat layanan berhenti.</string>
+    <string name="port_invalid">Masukkan port antara %1$d dan %2$d.</string>
+    <string name="test_connection">Tes Koneksi</string>
+    <string name="testing">Menguji…</string>
+    <string name="start_service">Mulai Layanan</string>
+    <string name="stop_service">Hentikan Layanan</string>
+    <string name="restart">Mulai ulang</string>
+    <string name="start_on_boot">Mulai saat perangkat menyala</string>
+    <string name="start_on_app_open">Mulai saat aplikasi dibuka</string>
+    <string name="activity_log">Log Aktivitas</string>
+    <string name="clear_log">Hapus</string>
+    <string name="log_empty">Belum ada aktivitas.</string>
+
+    <!-- Indikator kesehatan -->
+    <string name="health_running">Berjalan (port %1$d)</string>
+    <string name="health_stopped">Berhenti</string>
+    <string name="health_stopped_by_system">Dihentikan oleh sistem</string>
+    <string name="health_permission_missing">Izin belum diberikan – ketuk untuk membuka pengaturan aplikasi</string>
+    <string name="health_failed">Gagal: %1$s</string>
+    <string name="battery_guidance_link">Kenapa ini terjadi? Panduan baterai</string>
+
+    <!-- Banner dan izin -->
+    <string name="bt_unsupported">Perangkat ini tidak memiliki Bluetooth. Pencetakan tidak dapat dilakukan.</string>
+    <string name="permission_explain">Izin Bluetooth diperlukan untuk menampilkan printer terpasang, memindai, dan mencetak. Izinkan, atau aktifkan di pengaturan aplikasi.</string>
+    <string name="permission_grant">Izinkan</string>
+    <string name="bt_off_banner">Bluetooth mati. Nyalakan untuk menggunakan printer Anda.</string>
+    <string name="bt_enable">Nyalakan Bluetooth</string>
+
+    <!-- Dialog kegagalan -->
+    <string name="failure_port_title">Port sudah digunakan</string>
+    <string name="failure_port_body">Port %1$d sedang dipakai, atau instans lain dari aplikasi ini sudah berjalan. Pilih port lain lalu mulai lagi.</string>
+    <string name="failure_generic_title">Layanan tidak dapat dimulai</string>
+    <string name="failure_generic_body">%1$s</string>
+
+    <!-- Pindai & Pasangkan -->
+    <string name="scan_title">Pindai &amp; Pasangkan</string>
+    <string name="scan_running">Memindai perangkat di sekitar…</string>
+    <string name="scan_none_found">Tidak ada perangkat ditemukan. Pastikan printer menyala dan dapat ditemukan.</string>
+    <string name="scan_pick_hint">Ketuk perangkat untuk memilihnya.</string>
+    <string name="scan_again">Pindai lagi</string>
+    <string name="scan_not_paired">%1$s  [belum dipasangkan]</string>
+    <string name="pair_title">Pasangkan printer</string>
+    <string name="pair_confirm">Pasangkan dengan %1$s (%2$s)? Android akan menampilkan dialog pemasangannya sendiri; konfirmasi atau masukkan PIN di sana.</string>
+    <string name="pair_action">Pasangkan</string>
+    <string name="pairing_progress">Memasangkan dengan %1$s… Ikuti permintaan pemasangan Android.</string>
+    <string name="pair_failed_title">Pemasangan tidak selesai</string>
+    <string name="pair_failed_body">%1$s\n\nPrinter sebelumnya tetap dipilih. Anda juga dapat memasangkan perangkat di pengaturan Bluetooth Android.</string>
+    <string name="pair_failed_unknown">Kesalahan tidak diketahui.</string>
+    <string name="pair_cancelled">Pemasangan dibatalkan.</string>
+
+    <!-- Baris log dari UI -->
+    <string name="log_bt_unsupported">Perangkat ini tidak memiliki Bluetooth.</string>
+    <string name="log_bt_permission">Izin Bluetooth belum diberikan. Izinkan untuk menampilkan printer terpasang.</string>
+    <string name="log_bt_off">Bluetooth mati. Nyalakan untuk menggunakan printer.</string>
+    <string name="log_no_printer">Pilih printer terpasang terlebih dahulu.</string>
+    <string name="log_printer_selected">Printer dipilih: %1$s (%2$s)</string>
+    <string name="log_start_failed">Layanan tidak dapat dimulai: %1$s</string>
+    <string name="log_auto_start">Memulai layanan otomatis (mulai saat aplikasi dibuka).</string>
+    <string name="log_scan_failed">Pemindaian gagal: %1$s</string>
+    <string name="log_pair_cancelled">Pemasangan dibatalkan.</string>
+
+    <!-- Pengaturan -->
+    <string name="paper_width">Lebar kertas</string>
+    <string name="paper_width_explain">Hanya mengatur ukuran struk Tes Koneksi. Pekerjaan cetak dari POS dikirim apa adanya, sehingga tata letak struk harus sesuai dengan kertas.</string>
+    <string name="paper_58">58 mm (32 kolom)</string>
+    <string name="paper_80">80 mm (48 kolom)</string>
+    <string name="origins_title">Situs yang diizinkan</string>
+    <string name="allow_any_origin">Izinkan semua situs</string>
+    <string name="allow_any_origin_on">Semua situs dapat mencetak. Matikan untuk membatasi pencetakan hanya pada daftar situs.</string>
+    <string name="origins_explain">Hanya situs di bawah ini yang dapat mencetak. Permintaan tanpa header Origin (curl, aplikasi native) selalu diterima.</string>
+    <string name="origins_empty">Tidak ada situs dalam daftar: hanya permintaan tanpa header Origin yang diterima.</string>
+    <string name="origin_input_label">Situs (origin)</string>
+    <string name="origin_add">Tambah situs</string>
+    <string name="origin_remove">Hapus %1$s</string>
+    <string name="origin_invalid">Masukkan alamat yang valid, mis. https://pos.example.com</string>
+    <string name="origin_duplicate">Sudah ada dalam daftar.</string>
+    <string name="language">Bahasa</string>
+    <string name="language_system">Default sistem</string>
+    <string name="language_english">English</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="battery_title">Baterai &amp; berjalan di latar belakang</string>
+    <string name="battery_explain">Beberapa ponsel menghentikan aplikasi latar belakang untuk menghemat baterai, sehingga layanan cetak ikut berhenti. Kecualikan AndroidRawBT dari optimasi baterai.</string>
+    <string name="battery_exempt_yes">Dikecualikan dari optimasi baterai.</string>
+    <string name="battery_exempt_no">Belum dikecualikan: sistem dapat menghentikan layanan.</string>
+    <string name="battery_request">Izinkan berjalan di latar belakang</string>
+    <string name="battery_oem_title">Pengaturan khusus merek ponsel</string>
+    <string name="battery_oem_explain">Beberapa merek memerlukan pengaturan tambahan (autostart, kunci di recent apps). Buka panduan untuk ponsel Anda:</string>
+    <string name="oem_xiaomi">Xiaomi / Redmi / POCO</string>
+    <string name="oem_oppo">Oppo</string>
+    <string name="oem_realme">Realme</string>
+    <string name="oem_vivo">Vivo</string>
+    <string name="oem_samsung">Samsung</string>
+    <string name="oem_huawei">Huawei / Honor</string>
+    <string name="about">Tentang</string>
+    <string name="about_version">AndroidRawBT versi %1$s</string>
+    <string name="about_license">Sumber terbuka berlisensi MIT, sama seperti WinRawBT.</string>
+    <string name="about_privacy">Tanpa iklan, tanpa akun, tanpa telemetri. Data cetak tidak pernah disimpan; log hanya ada di memori.</string>
+    <string name="about_source">Kode sumber di GitHub</string>
+
+    <!-- Orientasi awal -->
+    <string name="onb_title">Selamat datang</string>
+    <string name="onb_step_of">Langkah %1$d dari %2$d</string>
+    <string name="onb_back">Kembali</string>
+    <string name="onb_next">Lanjut</string>
+    <string name="onb_finish">Selesai</string>
+    <string name="onb_granted">Diizinkan</string>
+    <string name="onb_not_granted">Belum diizinkan</string>
+    <string name="onb_bt_title">Izin Bluetooth</string>
+    <string name="onb_bt_body">AndroidRawBT memerlukan akses Bluetooth untuk menampilkan printer terpasang, memindai printer baru, dan mencetak.</string>
+    <string name="onb_notif_title">Notifikasi</string>
+    <string name="onb_notif_body">Saat layanan berjalan, sebuah notifikasi menampilkan statusnya beserta tombol Hentikan.</string>
+    <string name="onb_notif_warning">Jika ditolak, status dan tombol hentikan mungkin tidak terlihat. Layanan tetap berjalan dan mencetak.</string>
+    <string name="onb_notif_not_needed">Tidak diperlukan di versi Android ini.</string>
+    <string name="onb_battery_title">Jaga layanan tetap hidup</string>
+    <string name="onb_lna_title">Permintaan jaringan lokal Chrome</string>
+    <string name="onb_lna_body">Saat POS web Anda mencetak untuk pertama kali, Chrome meminta izin mengakses perangkat di jaringan lokal Anda. Pilih Izinkan agar halaman dapat menjangkau AndroidRawBT.</string>
+    <string name="onb_lna_fix">Jika Anda tidak sengaja memilih Blokir, buka pengaturan situs Chrome untuk situs POS Anda lalu setel Akses jaringan lokal ke Izinkan.</string>
+</resources>

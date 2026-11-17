@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="svc_channel_name">Print service</string>
+    <string name="svc_channel_description">Shows that the local print service is running and lets you stop it.</string>
+    <string name="svc_notif_starting">Starting…</string>
+    <string name="svc_notif_running">Running on port %1$d</string>
+    <string name="svc_notif_stop_action">Stop</string>
+    <string name="svc_err_port_in_use">Port %1$d is already in use. Another app or a second instance may be running.</string>
+    <string name="svc_err_permission">Permission missing: allow Bluetooth access for AndroidRawBT in app settings.</string>
+    <string name="svc_err_invalid_port">Invalid port %1$d.</string>
+    <string name="svc_err_start_failed">Could not start the service: %1$s</string>
+    <string name="deeplink_invalid">Invalid print link. Nothing was printed.</string>
+    <string name="deeplink_failed">Print failed: %1$s</string>
+</resources>

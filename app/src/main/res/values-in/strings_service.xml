@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="svc_channel_name">Layanan cetak</string>
+    <string name="svc_channel_description">Menandakan layanan cetak lokal sedang berjalan dan memungkinkan Anda menghentikannya.</string>
+    <string name="svc_notif_starting">Memulai…</string>
+    <string name="svc_notif_running">Berjalan di port %1$d</string>
+    <string name="svc_notif_stop_action">Berhenti</string>
+    <string name="svc_err_port_in_use">Port %1$d sedang dipakai. Aplikasi lain atau instance kedua mungkin sedang berjalan.</string>
+    <string name="svc_err_permission">Izin belum diberikan: izinkan akses Bluetooth untuk AndroidRawBT di pengaturan aplikasi.</string>
+    <string name="svc_err_invalid_port">Port %1$d tidak valid.</string>
+    <string name="svc_err_start_failed">Layanan tidak dapat dimulai: %1$s</string>
+    <string name="deeplink_invalid">Tautan cetak tidak valid. Tidak ada yang dicetak.</string>
+    <string name="deeplink_failed">Cetak gagal: %1$s</string>
+</resources>

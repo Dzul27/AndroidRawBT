@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bt_err_not_supported">Bluetooth tidak tersedia di perangkat ini.</string>
+    <string name="bt_err_off">Bluetooth mati.</string>
+    <string name="bt_err_permission">Izin Bluetooth belum diberikan.</string>
+    <string name="bt_err_not_paired">Printer belum dipasangkan. Pasangkan dulu lewat Pindai &amp; Pasangkan atau pengaturan Bluetooth Android.</string>
+    <string name="bt_err_invalid_mac">Alamat printer tidak valid.</string>
+    <string name="bt_err_unreachable">Printer tidak terjangkau atau mati.</string>
+    <string name="bt_err_write">Gagal mengirim data ke printer: %1$s</string>
+    <string name="bt_log_retry">Printer tidak merespons, mencoba lagi sekali...</string>
+    <string name="bt_log_loaded">%1$d perangkat terpasang dimuat.</string>
+    <string name="bt_err_scan_failed">Tidak dapat memulai pemindaian Bluetooth.</string>
+    <string name="bt_log_scan_start">Memindai perangkat Bluetooth...</string>
+    <string name="bt_log_scan_done">Pemindaian selesai: %1$d perangkat ditemukan.</string>
+    <string name="bt_log_pair_start">Memasangkan dengan %1$s...</string>
+    <string name="bt_log_pair_ok">Berhasil dipasangkan dengan %1$s.</string>
+    <string name="bt_err_pair_start">Tidak dapat memulai pemasangan.</string>
+    <string name="bt_err_pair_failed">Pemasangan gagal atau dibatalkan.</string>
+    <string name="bt_err_pair_timeout">Waktu pemasangan habis.</string>
+    <string name="bt_test_no_printer">Belum ada printer yang dipilih</string>
+    <string name="bt_test_start">Menguji %1$s...</string>
+    <string name="bt_test_ok">Uji berhasil. Struk tercetak.</string>
+    <string name="bt_test_failed">Uji gagal: %1$s</string>
+</resources>
