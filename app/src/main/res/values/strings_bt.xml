@@ -8,6 +8,11 @@
     <string name="bt_err_unreachable">Printer unreachable or powered off.</string>
     <string name="bt_err_write">Failed to send data to the printer: %1$s</string>
     <string name="bt_log_retry">Printer did not respond, retrying once...</string>
+    <string name="bt_err_channel_unsupported">This phone does not support the \"channel 1\" connection method. Choose another method in Settings.</string>
+    <string name="bt_log_connect_method">Connecting using: %1$s</string>
+    <string name="bt_method_standard">standard</string>
+    <string name="bt_method_insecure">insecure</string>
+    <string name="bt_method_channel1">channel 1</string>
     <string name="bt_log_loaded">Loaded %1$d paired devices.</string>
     <string name="bt_err_scan_failed">Could not start Bluetooth scan.</string>
     <string name="bt_log_scan_start">Scanning for Bluetooth devices...</string>

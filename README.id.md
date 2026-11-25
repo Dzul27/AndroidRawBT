@@ -6,7 +6,7 @@
 
 Ini pendamping Android dari [WinRawBT](https://github.com/Dzul27/WinRawBT) dengan **API lokal yang sama**, sehingga satu skrip POS berjalan di kedua platform. Tidak berafiliasi dengan proyek RawBT.
 
-> **Status: beta (v0.1.3-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
+> **Status: beta (v0.1.4-beta).** Perilaku pada printer asli dan Chrome untuk Android masih menunggu verifikasi di perangkat. WinRawBT baru mengonfirmasi printer EPPOS 58 mm.
 
 ## Fitur
 
@@ -110,6 +110,7 @@ Server hanya mengikat `127.0.0.1`, tetapi **loopback berlaku untuk seluruh peran
 | Tidak ada baris log, POS tidak bisa mencetak | Chrome Local Network Access ditolak; izinkan kembali di pengaturan situs. |
 | `[WARN] Rejected request from origin "..."` (403) | Tambahkan origin ke `AllowedOrigins` atau aktifkan `AllowAnyOrigin` di Pengaturan. |
 | Tautan `rawbt:` tidak mencetak | Payload tidak valid; toast dan entri log ditampilkan. |
+| Tercatat sudah dicetak tetapi kertas kosong | Sebagian printer tidak cocok dengan cara sambung Bluetooth standar. Di Pengaturan → Cara sambung Bluetooth, coba Alternatif 1 (insecure) atau Alternatif 2 (kanal 1), lalu jalankan Tes Koneksi. Log menampilkan cara yang dipakai tiap job. |
 
 ## Build dari source
 

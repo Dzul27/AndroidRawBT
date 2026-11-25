@@ -12,10 +12,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/** How the RFCOMM socket to the printer is created; alternatives help printers that ignore the standard one. */
+enum class BtConnectMode { STANDARD, INSECURE, CHANNEL_1 }
+
 data class Settings(
     val printerMac: String? = null,
     val port: Int = 8080,
     val paperWidthMm: Int = 58,
+    val btConnectMode: BtConnectMode = BtConnectMode.STANDARD,
     val allowAnyOrigin: Boolean = true,
     val allowedOrigins: List<String> = emptyList(),
     val startOnBoot: Boolean = false,
@@ -34,6 +38,7 @@ class SettingsRepository(context: Context) {
             printerMac = p[PRINTER_MAC],
             port = p[PORT] ?: 8080,
             paperWidthMm = p[PAPER_WIDTH_MM] ?: 58,
+            btConnectMode = BtConnectMode.entries.firstOrNull { it.name == p[BT_CONNECT_MODE] } ?: BtConnectMode.STANDARD,
             allowAnyOrigin = p[ALLOW_ANY_ORIGIN] ?: true,
             allowedOrigins = p[ALLOWED_ORIGINS]?.split('\n')?.filter { it.isNotBlank() } ?: emptyList(),
             startOnBoot = p[START_ON_BOOT] ?: false,
@@ -56,6 +61,10 @@ class SettingsRepository(context: Context) {
 
     suspend fun setPaperWidthMm(mm: Int) {
         store.edit { it[PAPER_WIDTH_MM] = mm }
+    }
+
+    suspend fun setBtConnectMode(mode: BtConnectMode) {
+        store.edit { it[BT_CONNECT_MODE] = mode.name }
     }
 
     suspend fun setAllowAnyOrigin(value: Boolean) {
@@ -86,6 +95,7 @@ class SettingsRepository(context: Context) {
         val PRINTER_MAC = stringPreferencesKey("printer_mac")
         val PORT = intPreferencesKey("port")
         val PAPER_WIDTH_MM = intPreferencesKey("paper_width_mm")
+        val BT_CONNECT_MODE = stringPreferencesKey("bt_connect_mode")
         val ALLOW_ANY_ORIGIN = booleanPreferencesKey("allow_any_origin")
         val ALLOWED_ORIGINS = stringPreferencesKey("allowed_origins")
         val START_ON_BOOT = booleanPreferencesKey("start_on_boot")

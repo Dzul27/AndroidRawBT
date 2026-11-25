@@ -6,7 +6,7 @@
 
 It is the Android companion of [WinRawBT](https://github.com/Dzul27/WinRawBT) and exposes the **same local print API**, so one POS script works on both platforms. Not affiliated with or endorsed by the RawBT project.
 
-> **Status: beta (v0.1.3-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
+> **Status: beta (v0.1.4-beta).** Behaviour on real printers and on Chrome for Android is pending on-device verification. WinRawBT has only confirmed an EPPOS 58 mm printer so far.
 
 ## Features
 
@@ -114,6 +114,7 @@ The server binds to `127.0.0.1` only, but **loopback is device-wide: any other a
 | No log line, POS cannot print | Chrome Local Network Access was denied; re-allow it in site settings. |
 | `[WARN] Rejected request from origin "..."` (403) | Add the origin to `AllowedOrigins` or enable `AllowAnyOrigin` in Settings. |
 | `rawbt:` link prints nothing | Invalid payload; a toast and log entry are shown. |
+| Logged as printed but nothing prints | Some printers ignore the standard Bluetooth connection. In Settings → Bluetooth connection method, try Alternative 1 (insecure) or Alternative 2 (channel 1), then run Test Connection. The log shows which method each job used. |
 
 ## Build from source
 

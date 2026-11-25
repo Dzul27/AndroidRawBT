@@ -4,6 +4,14 @@ All notable changes to AndroidRawBT. Format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+## [0.1.4-beta]
+
+### Fixed
+- Jobs logged as printed while the paper stayed blank on some cheap printers: the app now waits 500 ms after the Bluetooth link opens before sending the first byte.
+
+### Added
+- Settings: "Bluetooth connection method" (Standard, Alternative 1 insecure, Alternative 2 channel 1). If a job is logged as printed but nothing prints, try another method and run Test Connection. The log names the method used for each job.
+
 ## [0.1.3-beta]
 
 ### Fixed

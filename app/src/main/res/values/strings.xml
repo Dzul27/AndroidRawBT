@@ -86,6 +86,11 @@
     <!-- Settings -->
     <string name="paper_width">Paper width</string>
     <string name="paper_width_explain">Only sizes the Test Connection receipt. Print jobs from your POS are sent unchanged, so its receipt layout must match the paper.</string>
+    <string name="bt_mode_title">Bluetooth connection method</string>
+    <string name="bt_mode_explain">If the log says printed but the paper stays blank, try another method, then run Test Connection.</string>
+    <string name="bt_mode_standard">Standard (recommended)</string>
+    <string name="bt_mode_insecure">Alternative 1 (insecure)</string>
+    <string name="bt_mode_channel1">Alternative 2 (channel 1)</string>
     <string name="paper_58">58 mm (32 columns)</string>
     <string name="paper_80">80 mm (48 columns)</string>
     <string name="origins_title">Allowed websites</string>

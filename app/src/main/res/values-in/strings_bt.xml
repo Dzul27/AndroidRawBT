@@ -8,6 +8,11 @@
     <string name="bt_err_unreachable">Printer tidak terjangkau atau mati.</string>
     <string name="bt_err_write">Gagal mengirim data ke printer: %1$s</string>
     <string name="bt_log_retry">Printer tidak merespons, mencoba lagi sekali...</string>
+    <string name="bt_err_channel_unsupported">Ponsel ini tidak mendukung cara sambung \"kanal 1\". Pilih cara lain di Pengaturan.</string>
+    <string name="bt_log_connect_method">Menyambung dengan cara: %1$s</string>
+    <string name="bt_method_standard">standar</string>
+    <string name="bt_method_insecure">insecure</string>
+    <string name="bt_method_channel1">kanal 1</string>
     <string name="bt_log_loaded">%1$d perangkat terpasang dimuat.</string>
     <string name="bt_err_scan_failed">Tidak dapat memulai pemindaian Bluetooth.</string>
     <string name="bt_log_scan_start">Memindai perangkat Bluetooth...</string>

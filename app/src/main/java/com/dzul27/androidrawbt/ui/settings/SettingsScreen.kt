@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dzul27.androidrawbt.BuildConfig
 import com.dzul27.androidrawbt.R
+import com.dzul27.androidrawbt.settings.BtConnectMode
 import com.dzul27.androidrawbt.ui.AppLanguage
 import com.dzul27.androidrawbt.ui.AppLocale
 import com.dzul27.androidrawbt.ui.OriginAdd
@@ -97,6 +98,20 @@ fun SettingsScreen(vm: SettingsViewModel, scrollToBattery: Boolean, onBack: () -
             Text(stringResource(R.string.paper_width_explain), style = MaterialTheme.typography.bodySmall)
             RadioRow(stringResource(R.string.paper_58), s.paperWidthMm == 58) { vm.setPaperWidth(58) }
             RadioRow(stringResource(R.string.paper_80), s.paperWidthMm == 80) { vm.setPaperWidth(80) }
+            HorizontalDivider()
+
+            // Bluetooth connection method
+            SectionTitle(R.string.bt_mode_title)
+            Text(stringResource(R.string.bt_mode_explain), style = MaterialTheme.typography.bodySmall)
+            RadioRow(stringResource(R.string.bt_mode_standard), s.btConnectMode == BtConnectMode.STANDARD) {
+                vm.setBtConnectMode(BtConnectMode.STANDARD)
+            }
+            RadioRow(stringResource(R.string.bt_mode_insecure), s.btConnectMode == BtConnectMode.INSECURE) {
+                vm.setBtConnectMode(BtConnectMode.INSECURE)
+            }
+            RadioRow(stringResource(R.string.bt_mode_channel1), s.btConnectMode == BtConnectMode.CHANNEL_1) {
+                vm.setBtConnectMode(BtConnectMode.CHANNEL_1)
+            }
             HorizontalDivider()
 
             // Origin control (FR-SVC-03)

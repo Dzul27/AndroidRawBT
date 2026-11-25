@@ -3,6 +3,7 @@ package com.dzul27.androidrawbt.ui.settings
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dzul27.androidrawbt.settings.BtConnectMode
 import com.dzul27.androidrawbt.settings.Settings
 import com.dzul27.androidrawbt.settings.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +19,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setPaperWidth(mm: Int) {
         viewModelScope.launch { repo.setPaperWidthMm(mm) }
+    }
+
+    fun setBtConnectMode(mode: BtConnectMode) {
+        viewModelScope.launch { repo.setBtConnectMode(mode) }
     }
 
     fun setAllowAnyOrigin(value: Boolean) {

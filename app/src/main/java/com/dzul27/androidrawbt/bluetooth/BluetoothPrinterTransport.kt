@@ -8,6 +8,8 @@ import android.content.Context
 import com.dzul27.androidrawbt.R
 import com.dzul27.androidrawbt.core.ActivityLog
 import com.dzul27.androidrawbt.printing.PrinterTransport
+import com.dzul27.androidrawbt.settings.BtConnectMode
+import com.dzul27.androidrawbt.settings.SettingsRepository
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
@@ -29,8 +31,12 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
         withContext(Dispatchers.IO) {
             try {
                 cancelDiscovery()
-                val socket = connectWithRetry(device)
+                val mode = SettingsRepository(context).current().btConnectMode
+                ActivityLog.info(context.getString(R.string.bt_log_connect_method, context.getString(labelRes(mode))))
+                val socket = connectWithRetry(device, mode)
                 try {
+                    // Cheap printers drop bytes that arrive right after the link opens.
+                    delay(CONNECT_SETTLE_MS)
                     try {
                         writePaced(socket.outputStream, bytes)
                     } catch (e: IOException) {
@@ -66,6 +72,12 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
         }
     }
 
+    private fun labelRes(mode: BtConnectMode): Int = when (mode) {
+        BtConnectMode.STANDARD -> R.string.bt_method_standard
+        BtConnectMode.INSECURE -> R.string.bt_method_insecure
+        BtConnectMode.CHANNEL_1 -> R.string.bt_method_channel1
+    }
+
     private fun cancelDiscovery() {
         try {
             context.getSystemService(android.bluetooth.BluetoothManager::class.java).adapter.cancelDiscovery()
@@ -75,11 +87,11 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
     }
 
     /** Connects on a fresh socket; one retry after a short delay (printer may be waking up). */
-    private suspend fun connectWithRetry(device: BluetoothDevice): BluetoothSocket {
+    private suspend fun connectWithRetry(device: BluetoothDevice, mode: BtConnectMode): BluetoothSocket {
         for (attempt in 1..MAX_ATTEMPTS) {
             var socket: BluetoothSocket? = null
             try {
-                socket = device.createRfcommSocketToServiceRecord(SPP_UUID)
+                socket = createSocket(device, mode)
                 socket.connect()
                 return socket
             } catch (e: IOException) {
@@ -92,6 +104,19 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
             }
         }
         throw IOException(context.getString(R.string.bt_err_unreachable))
+    }
+
+    private fun createSocket(device: BluetoothDevice, mode: BtConnectMode): BluetoothSocket = when (mode) {
+        BtConnectMode.STANDARD -> device.createRfcommSocketToServiceRecord(SPP_UUID)
+        BtConnectMode.INSECURE -> device.createInsecureRfcommSocketToServiceRecord(SPP_UUID)
+        BtConnectMode.CHANNEL_1 -> try {
+            device.javaClass.getMethod("createRfcommSocket", Int::class.javaPrimitiveType)
+                .invoke(device, 1) as BluetoothSocket
+        } catch (e: ReflectiveOperationException) {
+            throw IOException(context.getString(R.string.bt_err_channel_unsupported), e)
+        } catch (e: ClassCastException) {
+            throw IOException(context.getString(R.string.bt_err_channel_unsupported), e)
+        }
     }
 
     private fun closeQuietly(socket: BluetoothSocket) {
@@ -108,6 +133,8 @@ class BluetoothPrinterTransport(context: Context) : PrinterTransport {
         const val RETRY_DELAY_MS = 1_000L
     }
 }
+
+internal const val CONNECT_SETTLE_MS = 500L
 
 internal const val WRITE_CHUNK_BYTES = 128
 internal const val WRITE_PAUSE_MS = 15L

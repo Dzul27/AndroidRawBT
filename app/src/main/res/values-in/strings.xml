@@ -86,6 +86,11 @@
     <!-- Pengaturan -->
     <string name="paper_width">Lebar kertas</string>
     <string name="paper_width_explain">Hanya mengatur ukuran struk Tes Koneksi. Pekerjaan cetak dari POS dikirim apa adanya, sehingga tata letak struk harus sesuai dengan kertas.</string>
+    <string name="bt_mode_title">Cara sambung Bluetooth</string>
+    <string name="bt_mode_explain">Jika log menyatakan sudah tercetak tetapi kertas tetap kosong, coba cara lain, lalu jalankan Tes Koneksi.</string>
+    <string name="bt_mode_standard">Standar (disarankan)</string>
+    <string name="bt_mode_insecure">Alternatif 1 (insecure)</string>
+    <string name="bt_mode_channel1">Alternatif 2 (kanal 1)</string>
     <string name="paper_58">58 mm (32 kolom)</string>
     <string name="paper_80">80 mm (48 kolom)</string>
     <string name="origins_title">Situs yang diizinkan</string>
